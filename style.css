@@ -1,0 +1,6 @@
+/* Additional styles for the visual overlay */
+.highlight {
+    outline: 2px solid #3b82f6; /* Tailwind blue-500 */
+    outline-offset: -2px;
+  }
+  

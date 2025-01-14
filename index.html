@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+  <script src="tailwind.config.js"></script>
+
+
+  <title>Web Builder Inspector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Additional styles for the visual overlay */
+    .highlight {
+      outline: 2px solid #3b82f6; /* Tailwind blue-500 */
+      outline-offset: -2px;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="flex h-screen">
+    <!-- Left Sidebar: Component and Tailwind Class Viewer -->
+    <div class="w-1/4 bg-white border-r border-gray-300 p-4">
+      <h2 class="text-lg font-bold mb-4">React Component Structure</h2>
+      <ul id="component-structure" class="text-sm space-y-2">
+        <li>Select an element to view its structure.</li>
+      </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 p-4 relative" id="main-content">
+      <h1 class="text-2xl font-bold mb-4">Welcome to the Web Builder Inspector</h1>
+      <p class="mb-4">Hover over elements to highlight them and click to inspect their properties.</p>
+
+      <!-- Example Elements -->
+      <div class="bg-gray-200 p-4 mb-4">
+        <p class="text-gray-700">This is a paragraph inside a div.</p>
+      </div>
+      <button class="bg-blue-500 text-white px-4 py-2 rounded">Click Me</button>
+    </div>
+
+    <!-- Right Sidebar: Tailwind Class Editor -->
+    <div class="w-1/4 bg-white border-l border-gray-300 p-4">
+      <h2 class="text-lg font-bold mb-4">Tailwind CSS Editor</h2>
+      <div id="tailwind-editor" class="text-sm space-y-2">
+        <p>Select an element to edit its Tailwind classes.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mainContent = document.getElementById('main-content');
+      let selectedElement = null;
+
+      // Highlight element on hover
+      mainContent.addEventListener('mouseover', (event) => {
+        const target = event.target;
+        if (target !== mainContent && target !== selectedElement) {
+          target.classList.add('highlight');
+        }
+      });
+
+      mainContent.addEventListener('mouseout', (event) => {
+        const target = event.target;
+        if (target !== mainContent && target !== selectedElement) {
+          target.classList.remove('highlight');
+        }
+      });
+
+      // Select element on click
+      mainContent.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const target = event.target;
+
+        if (selectedElement) {
+          selectedElement.classList.remove('highlight');
+        }
+
+        selectedElement = target;
+        selectedElement.classList.add('highlight');
+
+        // Update React Component Structure
+        const structure = document.getElementById('component-structure');
+        structure.innerHTML = `<li>${target.tagName}</li>`;
+
+        // Update Tailwind Classes
+        const editor = document.getElementById('tailwind-editor');
+        editor.innerHTML = `
+          <label class='block'>
+            <span class='text-gray-700'>Tailwind Classes:</span>
+            <input type='text' value='${target.className}' class='w-full mt-1 p-2 border border-gray-300 rounded' id='class-input' />
+          </label>
+        `;
+
+        const input = document.getElementById('class-input');
+        input.addEventListener('input', (e) => {
+          target.className = e.target.value;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
